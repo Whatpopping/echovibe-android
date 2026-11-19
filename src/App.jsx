@@ -33,6 +33,32 @@ const EchoVibeApp = () => {
     { id: 5, title: "Heat Waves", artist: "Glass Animals", duration: "3:58", plays: "1.5B" },
   ];
 
+  // Load from localStorage on mount
+  useEffect(() => {
+    try {
+      const savedLiked = localStorage.getItem('echovibe-liked');
+      if (savedLiked) setLikedSongs(new Set(JSON.parse(savedLiked)));
+      const savedRecent = localStorage.getItem('echovibe-recent');
+      if (savedRecent) setRecentlyPlayed(JSON.parse(savedRecent));
+    } catch (e) {
+      console.warn('localStorage unavailable');
+    }
+  }, []);
+
+  // Persist liked songs
+  useEffect(() => {
+    try {
+      localStorage.setItem('echovibe-liked', JSON.stringify([...likedSongs]));
+    } catch (e) {}
+  }, [likedSongs]);
+
+  // Persist recently played
+  useEffect(() => {
+    try {
+      localStorage.setItem('echovibe-recent', JSON.stringify(recentlyPlayed));
+    } catch (e) {}
+  }, [recentlyPlayed]);
+
   const searchYouTube = useCallback(async (query) => {
     if (!query.trim()) return;
     setIsLoading(true);
@@ -40,10 +66,10 @@ const EchoVibeApp = () => {
     try {
       await new Promise(resolve => setTimeout(resolve, 800));
       const mockResults = [
-        { id: Date.now() + 1, title: `${query} - Official Music Video`, artist: "Artist Name", duration: "3:45", thumbnail: "https://via.placeholder.com/60x60/8B5CF6/FFFFFF?text=♪" },
-        { id: Date.now() + 2, title: `${query} (Lyrics)`, artist: "Various Artists", duration: "3:12", thumbnail: "https://via.placeholder.com/60x60/EC4899/FFFFFF?text=♪" },
-        { id: Date.now() + 3, title: `${query} - Acoustic Version`, artist: "Cover Artist", duration: "3:30", thumbnail: "https://via.placeholder.com/60x60/10B981/FFFFFF?text=♪" },
-        { id: Date.now() + 4, title: `${query} - Remix`, artist: "DJ Remix", duration: "4:15", thumbnail: "https://via.placeholder.com/60x60/F59E0B/FFFFFF?text=♪" },
+        { id: Date.now() + 1, title: `${query} - Official Music Video`, artist: "Artist Name", duration: "3:45", thumbnail: "https://via.placeholder.com/60x60/8B5CF6/FFFFFF?text=\u266a" },
+        { id: Date.now() + 2, title: `${query} (Lyrics)`, artist: "Various Artists", duration: "3:12", thumbnail: "https://via.placeholder.com/60x60/EC4899/FFFFFF?text=\u266a" },
+        { id: Date.now() + 3, title: `${query} - Acoustic Version`, artist: "Cover Artist", duration: "3:30", thumbnail: "https://via.placeholder.com/60x60/10B981/FFFFFF?text=\u266a" },
+        { id: Date.now() + 4, title: `${query} - Remix`, artist: "DJ Remix", duration: "4:15", thumbnail: "https://via.placeholder.com/60x60/F59E0B/FFFFFF?text=\u266a" },
       ];
       setSearchResults(mockResults);
     } catch (err) {
@@ -113,7 +139,7 @@ const EchoVibeApp = () => {
     <div className="flex items-center space-x-4 p-3 hover:bg-gray-800 rounded-lg transition-colors group">
       <div className="relative">
         <img 
-          src={track.thumbnail || "https://via.placeholder.com/48x48/8B5CF6/FFFFFF?text=♪"} 
+          src={track.thumbnail || "https://via.placeholder.com/48x48/8B5CF6/FFFFFF?text=\u266a"} 
           alt={track.title}
           className="w-12 h-12 rounded object-cover"
         />
@@ -240,7 +266,7 @@ const EchoVibeApp = () => {
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3 flex-1 min-w-0">
             <img 
-              src={currentTrack.thumbnail || "https://via.placeholder.com/48x48/8B5CF6/FFFFFF?text=♪"} 
+              src={currentTrack.thumbnail || "https://via.placeholder.com/48x48/8B5CF6/FFFFFF?text=\u266a"} 
               alt={currentTrack.title}
               className="w-10 h-10 rounded object-cover"
             />
